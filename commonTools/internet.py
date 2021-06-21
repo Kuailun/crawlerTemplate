@@ -61,6 +61,7 @@ def get_response(url, headers = None):
     :return:
     """
 
+    response = None
     try:
         if not headers:
             response = requests.get(url)
@@ -90,5 +91,4 @@ def get_response(url, headers = None):
     except Exception as err:
         logger.error('Request其他失败原因，{0}'.format(err.__class__))
         pass
-    else:
-        return response
+    return response
