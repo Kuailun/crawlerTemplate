@@ -53,7 +53,7 @@ class UserAgent:
         return str(self.__browserUseragent[random.randint(0, len(self.__browserUseragent) - 1)])
     pass
 
-def get_response(url, headers = None):
+def get_response(url, headers = None, proxy=None):
     """
     根据用户要求，发生get请求
     :param url:
@@ -63,9 +63,15 @@ def get_response(url, headers = None):
 
     try:
         if not headers:
-            response = requests.get(url)
+            if not proxy:
+                response = requests.get(url)
+            else:
+                response = requests.get(url, proxies=proxy)
         else:
-            response = requests.get(url,headers=headers)
+            if not proxy:
+                response = requests.get(url, headers=headers)
+            else:
+                response = requests.get(url, headers=headers, proxies=proxy)
         response.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         # In the event of the rare invalid HTTP response, Requests will raise an HTTPError exception (e.g. 401 Unauthorized)
@@ -92,3 +98,35 @@ def get_response(url, headers = None):
         pass
     else:
         return response
+    pass
+
+class Proxy:
+    def __init__(self, order=None,num=1,username="13810293640",password="123456aa"):
+        self.__proxy_ip = []
+        if order:
+            api = "http://kps.kdlapi.com/api/getkps/?orderid={0}&num={1}&pt=1&format=json&sep=1".format(order, num)
+            response = requests.get(api).json()
+            if response['code'] == 0:
+                for item in response['data']['proxy_list']:
+                    proxy = {
+                        "http": "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password,
+                                                                        "proxy": item},
+                        "https": "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password,
+                                                                         "proxy": item}
+                    }
+                    self.__proxy_ip.append(proxy)
+                self.__proxy_ip = response['data']['proxy_list']
+                pass
+            else:
+                print("代理IP:" + response['msg'])
+        self.__proxy_ip.append("")
+        self.__index = 0
+
+    def next_proxy(self):
+        to_ret = self.__proxy_ip[self.__index]
+        if self.__index+1 >= len(self.__proxy_ip):
+            self.__index = 0
+        else:
+            self.__index += 1
+            pass
+        return to_ret
