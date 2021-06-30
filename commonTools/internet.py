@@ -61,6 +61,7 @@ def get_response(url, headers = None, proxy=None):
     :return:
     """
 
+    response = None
     try:
         if not headers:
             if not proxy:
@@ -96,10 +97,7 @@ def get_response(url, headers = None, proxy=None):
     except Exception as err:
         logger.error('Request其他失败原因，{0}'.format(err.__class__))
         pass
-    else:
-        return response
-    pass
-
+    return response
 class Proxy:
     def __init__(self, order=None,num=1,username="13810293640",password="123456aa"):
         self.__proxy_ip = []

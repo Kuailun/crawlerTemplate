@@ -80,7 +80,7 @@ class Mongo_Database(database):
         db = client.keepdata
 
         # 创建用户ID的集合
-        collection_user_id = db.user_id
+        collection_user_id = db.user
         collection_user_id.create_index('user_id', unique = True)
 
         # # 创建已确认的用户ID的集合
@@ -89,7 +89,7 @@ class Mongo_Database(database):
 
         # 数据库，不存在的话会创建
         # self._database = {"posts": collection_posts, "user_id": collection_user_id, "confirmed_id": collection_confirmed_id}
-        self._database = {"user_id": collection_user_id}
+        self._database = {"user": collection_user_id}
 
         pass
 
